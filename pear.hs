@@ -37,35 +37,37 @@ var = lexeme $ do
   rest <- inner_word
   return $ a : rest
 
-basic_type :: Parser Exp
-basic_type = T <$> var
+genus :: Parser Exp
+genus = T <$> var
 
 arrow :: Parser String 
 arrow = lexeme $ string "->"
 
-arrow_expression :: Parser Exp -> Parser Exp
-arrow_expression f = do
-  domain <- basic_type 
+(-->) :: Parser Exp -> Parser Exp -> Parser Exp
+(-->) first second = do
+  domain <- first 
   arrow
-  range <- f
+  range <- second
   return $ Fun Nothing (Just domain) range
 
-no_arrow :: Parser String
-no_arrow = lexeme $ do {nothyphen <|> end; notbracket <|> end} where
-  nothyphen = (\x -> x : []) <$> (satisfy (\x -> x /= '-'))
-  notbracket = (\x -> x : []) <$> (satisfy (\x -> x /= '>'))
-  end = try (const "" <$> lookAhead eof)
+end :: Parser a -> Parser a
+end a = do
+  x <- a
+  eof
+  return x
 
+parens :: Parser Exp -> Parser Exp
+parens f = (between (string "(") (string ")") f)
 
+-- Leo's masterpiece
 function :: Parser Exp
--- function = choice [ between (string "(") (string ")") function
---                   , basic_type <* no_arrow
---                   , arrow_expression function
---                   ]
-function = (try (basic_type <* no_arrow)) <|>
-           (try (arrow_expression function)) <|>
-           (try (between (string "(") (string ")") function))
+function = try (atom --> function)
+  <|> try atom
 
+atom :: Parser Exp
+atom = try (parens function)
+  <|> try genus
+  
 named :: Parser Exp -> Parser Exp
 named p = do
   x <- var
