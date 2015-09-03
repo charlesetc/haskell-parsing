@@ -1,8 +1,7 @@
  -- pear.hs
 module Pear where
 
-import Text.Parsec hiding (notFollowedBy)
-import Text.Parsec.String (Parser)
+import Text.ParserCombinators.ReadP
 import Control.Monad (void)
 import Control.Applicative hiding (many, (<|>))
 
@@ -17,58 +16,54 @@ data Exp = T Type
            } deriving (Show, Eq)
 
 -- Alias for simply running a parser.
-run :: Parser a -> String -> Either ParseError a
-run p = parse p ""
-
--- Sucks up as much whitespace as possible.
-whitespace :: Parser String
-whitespace = many $ oneOf " \t\n\r"
+run :: ReadP Exp -> ReadS Exp 
+run p = readP_to_S p
 
 -- Removes whitespace on both sides of a parser
-lexeme :: Parser String -> Parser String
-lexeme p = whitespace *> p <* whitespace
+lexeme :: ReadP String -> ReadP String
+lexeme p = skipSpaces *> p <* skipSpaces 
 
-inner_word :: Parser String
-inner_word = many $ noneOf " \t\n\r.;:()->"
+inner_word :: ReadP String
+inner_word = many $ satisfy (`elem` "\t\n\r.;:()->")
 
-var :: Parser String
+var :: ReadP String
 var = lexeme $ do
-  a <- letter 
+  a <- satisfy $ const True -- letter
   rest <- inner_word
   return $ a : rest
 
-genus :: Parser Exp
+genus :: ReadP Exp
 genus = T <$> var
 
-arrow :: Parser String 
+arrow :: ReadP String 
 arrow = lexeme $ string "->"
 
-(-->) :: Parser Exp -> Parser Exp -> Parser Exp
+(-->) :: ReadP Exp -> ReadP Exp -> ReadP Exp
 (-->) first second = do
   domain <- first 
   arrow
   range <- second
   return $ Fun Nothing (Just domain) range
 
-end :: Parser a -> Parser a
+end :: ReadP a -> ReadP a
 end a = do
   x <- a
   eof
   return x
 
-parens :: Parser Exp -> Parser Exp
+parens :: ReadP Exp -> ReadP Exp
 parens f = (between (string "(") (string ")") f)
 
 -- Leo's masterpiece
-function :: Parser Exp -> Parser Exp
-function a = try ((atom a) --> (function a))
-  <|> try (atom a)
+function :: ReadP Exp -> ReadP Exp
+function a = (atom a) --> (function a) +++ atom a
 
-atom :: Parser Exp -> Parser Exp
-atom a = try (parens (function a))
-  <|> try a 
+generic = function genus <* eof
+
+atom :: ReadP Exp -> ReadP Exp
+atom a = parens (function a) +++ a 
   
-named :: Parser Exp -> Parser Exp
+named :: ReadP Exp -> ReadP Exp
 named p = do
   x <- var
   string ":"
