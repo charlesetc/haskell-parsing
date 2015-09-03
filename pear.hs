@@ -60,13 +60,13 @@ parens :: Parser Exp -> Parser Exp
 parens f = (between (string "(") (string ")") f)
 
 -- Leo's masterpiece
-function :: Parser Exp
-function = try (atom --> function)
-  <|> try atom
+function :: Parser Exp -> Parser Exp
+function a = try ((atom a) --> (function a))
+  <|> try (atom a)
 
-atom :: Parser Exp
-atom = try (parens function)
-  <|> try genus
+atom :: Parser Exp -> Parser Exp
+atom a = try (parens (function a))
+  <|> try a 
   
 named :: Parser Exp -> Parser Exp
 named p = do
@@ -76,5 +76,3 @@ named p = do
   return $ case y of
     T _ -> Fun (Just x) Nothing y
     Fun _ p r -> Fun (Just x) p r
-
-
