@@ -4,6 +4,7 @@ module Pear where
 import Text.ParserCombinators.ReadP
 import Control.Monad (void)
 import Control.Applicative hiding (many, (<|>))
+import Data.Char (isAlpha)
 
 type Type = String
 type Name = String
@@ -16,7 +17,7 @@ data Exp = T Type
            } deriving (Show, Eq)
 
 -- Alias for simply running a parser.
-run :: ReadP Exp -> ReadS Exp 
+run :: ReadP a -> ReadS a 
 run p = readP_to_S p
 
 -- Removes whitespace on both sides of a parser
@@ -24,16 +25,13 @@ lexeme :: ReadP String -> ReadP String
 lexeme p = skipSpaces *> p <* skipSpaces 
 
 inner_word :: ReadP String
-inner_word = many $ satisfy (`elem` "\t\n\r.;:()->")
+inner_word = many $ satisfy (\x -> not(elem x " \t\n\r.;:()->"))
 
 var :: ReadP String
-var = lexeme $ do
-  a <- satisfy $ const True -- letter
-  rest <- inner_word
-  return $ a : rest
+var = lexeme $ (((:) <$> (satisfy isAlpha)) <*> inner_word)
 
-genus :: ReadP Exp
-genus = T <$> var
+basic :: ReadP Exp
+basic = T <$> var
 
 arrow :: ReadP String 
 arrow = lexeme $ string "->"
@@ -54,14 +52,13 @@ end a = do
 parens :: ReadP Exp -> ReadP Exp
 parens f = (between (string "(") (string ")") f)
 
--- Leo's masterpiece
-function :: ReadP Exp -> ReadP Exp
-function a = (atom a) --> (function a) +++ atom a
+function :: ReadP Exp
+function = atom --> function +++ atom
+atom :: ReadP Exp
+atom = basic +++ parens function
 
-generic = function genus <* eof
-
-atom :: ReadP Exp -> ReadP Exp
-atom a = parens (function a) +++ a 
+top_function :: ReadP Exp
+top_function = ((named atom --> named function) +++ named atom)
   
 named :: ReadP Exp -> ReadP Exp
 named p = do
