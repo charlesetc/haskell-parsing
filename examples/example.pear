@@ -1,0 +1,96 @@
+# example.pear
+
+# variable declaration:
+x = 2
+# change variable:
+x = 3
+# cannot change variable type:
+x = "a string" # error.
+
+y = "a multiline
+ string" # strings can be multiline. 
+
+# define a function
+square x = x * x
+
+# define a function
+square x {
+  x.times {
+    x += x
+  }
+  return x # 'return' is optional
+}
+
+square_add x y = (square x) + y
+
+plus_four x = square_add 2 x # simple. explicit. no-eta reduction.
+
+# call a function
+square 2 #> 4
+
+# define a class.
+class List {
+  value
+  next? # next is optional. Can be None.
+        # have to use type checks to do anything with it.
+        # Ooh you can type check on an interface!
+  
+  # Will be called on instantiation
+  class.new value {
+    self.value = value
+    self.next? = None 
+  }
+  
+  # define a method
+  capital_value {
+    value.to_uppercase # value must have to_uppercase method.
+  }
+
+  # god damned snake_case.
+  set_next next {
+    self.next = next
+  }
+}
+
+l = List.new("hello")
+l.next = some_library.next_list() # some method.
+
+# If statements btw.
+if condition {
+
+} next_condition {
+
+} else { # else is just an alias for 'True'
+
+}
+
+
+l.next : List {
+  l.
+} l.next : None { # implicit chain else if
+
+} else {
+
+} # this line has to be empty or have a semicolon.
+
+# specify an explicit interface.
+l.next ? some methods that might exist {
+
+}
+
+discard l # garbage collect l.
+
+## Some notes on the language:
+# You can't make objects that aren't
+# pass-by-reference. All types are pointers
+
+# lists are lists of pointers to arbitrary items. 
+# Each item in the list must satisfy the implicit
+# interface. Tuples are different. 
+# Once they are instanciated, each part of the tuple 
+# haws its own interface. This makes total sense .
+#
+# Okay so this is going to be a complicated language to lex.
+# Let's start with some basic infix operators, code blocks, 
+# and maybe even if statements, get that compiling, and move
+# on from there.
