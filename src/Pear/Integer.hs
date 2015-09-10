@@ -48,8 +48,8 @@ divide = Binary (tokn "/" (BinaryExp Divide)) 2 L
 exponnt = Binary (tokn "^" (BinaryExp Exponent)) 3 L
 
 address, negative :: Unary LExp
-address = Unary (tokn "&" (UnaryExp Address))
-negative = Unary (tokn "-" (UnaryExp Negative))
+address = tokn "&" (UnaryExp Address)
+negative =tokn "-" (UnaryExp Negative)
 
 binary_lists = groupBy f [plus, minus, times, divide, exponnt] where
   f a b = precedence a == precedence b
