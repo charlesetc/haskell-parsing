@@ -4,6 +4,14 @@
 x = 2
 # change variable:
 x = 3
+
+# infix operators
+x = 3 + 4
+
+right-operator $ 3
+left-operator (-2)
+
+
 # cannot change variable type:
 x = "a string" # error.
 
@@ -75,22 +83,22 @@ l.next : List {
 
 # specify an explicit interface.
 l.next ? some methods that might exist {
-
+  
 }
 
-discard l # garbage collect l.
+discard l # garbage collect l. oh that's right.
 
 ## Some notes on the language:
 # You can't make objects that aren't
-# pass-by-reference. All types are pointers
+# pass-by-reference. All types are pointers,
+# except built-ins like 'int'. 
 
 # lists are lists of pointers to arbitrary items. 
 # Each item in the list must satisfy the implicit
 # interface. Tuples are different. 
 # Once they are instanciated, each part of the tuple 
-# haws its own interface. This makes total sense .
+# has its own interface.
 #
-# Okay so this is going to be a complicated language to lex.
-# Let's start with some basic infix operators, code blocks, 
-# and maybe even if statements, get that compiling, and move
-# on from there.
+# Lists have a fixed size. There is another kind of
+# list which doesn't have a fixed size and expands
+# as you go.

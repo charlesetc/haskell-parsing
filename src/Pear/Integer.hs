@@ -59,4 +59,4 @@ intelel = Const . LInt <$> integer
 algebra = Algebra binary_lists unary_lists [intelel]
 
 lparse :: String -> Either ParseError LExp
-lparse = parse (expression algebra) ""
+lparse = parse (expression algebra algebra) ""

@@ -32,7 +32,7 @@ binaries = process . binary where
   process a = map bop $ head a
 
 algebra_rest :: Algebra a -> Algebra a
-algebra_rest a = a { binary = tail . binaries a } -- need to case in future
+algebra_rest a = a { binary = tail . binary $ a } -- need to case in future
 
 next :: Algebra a -> Algebra a
 next a = a { binary = tail (binary a) }
@@ -61,13 +61,11 @@ parseE original current = do
 -- parseT original current = do
 
 atom :: Algebra a -> Parser a
-atom a = try (choice (symbols a)) <|> (parens (expression a))
+atom a = try (choice (symbols a)) <|> (parens (expression a a))
 
 unary_expression :: Algebra a -> Parser a
 unary_expression a = do 
   op <- choice (map uop (unary a))
-  arg <- (expression a)
+  arg <- (expression a a)
   return $ op arg
-
-
 
