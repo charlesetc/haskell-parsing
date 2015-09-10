@@ -1,7 +1,7 @@
-# Pear.hs
+# Pear
 
-Not sure what this is going to be. Currently parsing Haskell's type system. 
+Pear language. Currently just parsing the opearators.
 
 ```haskell 
-run function "a -> (b -> c) -> (d -> e)"
+lparse "1 + 2 * (3 - -1)"
 ```
