@@ -1,10 +1,14 @@
+{-# LANGUAGE RankNTypes #-}
+
 -- Integer.hs
+
 
 module Pear.Integer where
 
 import Pear.Operator
 import Text.Parsec
-import Text.Parsec.String (Parser)
+-- import Text.Parsec.String (Parser)
+import Control.Monad.Reader
 import Data.Char (isDigit)
 import Data.List (groupBy)
 
@@ -29,34 +33,105 @@ data LExp
   | Const LInt
   deriving (Show)
 
--- spaces = many $ oneOf " \n\t\r"
+type LParser a = forall u. Parsec String u a
 
-lexeme :: Parser a -> Parser a
+lexeme :: LParser a -> LParser a
 lexeme a = spaces *> a <* spaces
 
-tokn :: String -> b -> Parser b
+tokn :: String -> b -> LParser b
 tokn a b = (lexeme . string $ a) >> return b
 
-integer :: Parser Int
+integer :: LParser a
 integer = lexeme (read <$> many1 (satisfy (isDigit)))
 
-plus, minus, times, divide, exponnt :: Binary LExp
-plus = Binary (tokn "+" (BinaryExp Plus)) 1 L
-minus = Binary (tokn "-" (BinaryExp Minus)) 1 L
-times = Binary (tokn "*" (BinaryExp Times)) 2 L
-divide = Binary (tokn "/" (BinaryExp Divide)) 2 L
-exponnt = Binary (tokn "^" (BinaryExp Exponent)) 3 L
+-- algebra :: Algebra Int
+-- algebra = a where
+--   a = Algebra 0 [b] [] [integer] 
+--   b = Binary op L
+--   op = putState a >> tokn "+" (BinaryExp Plus)
+  
 
-address, negative :: Unary LExp
-address = tokn "&" (UnaryExp Address)
-negative =tokn "-" (UnaryExp Negative)
+-- plus :: Binary LExp
+-- plus = Binary (tokn "+" (BinaryExp Plus)) L
 
-binary_lists = groupBy f [plus, minus, times, divide, exponnt] where
-  f a b = precedence a == precedence b
-unary_lists = [address, negative]
-intelel = Const . LInt <$> integer
+-- lparse :: String -> Either ParseError LExp
+-- lparse = parse (expression algebra algebra) ""
 
-algebra = Algebra binary_lists unary_lists [intelel]
+--algebra = Algebra binary_lists unary_lists [intelel]
 
-lparse :: String -> Either ParseError LExp
-lparse = parse (expression algebra algebra) ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- plus, minus, times, divide, exponnt :: Binary LExp
+-- minus = Binary (tokn "-" (BinaryExp Minus)) 1 L
+-- times = Binary (tokn "*" (BinaryExp Times)) 2 L
+-- divide = Binary (tokn "/" (BinaryExp Divide)) 2 L
+-- exponnt = Binary (tokn "^" (BinaryExp Exponent)) 3 L
+
+-- address, negative :: Unary LExp
+-- address = tokn "&" (UnaryExp Address)
+-- negative =tokn "-" (UnaryExp Negative)
+
+-- binary_lists = groupBy f [plus, minus, times, divide, exponnt] where
+--   f a b = precedence a == precedence b
+-- unary_lists = [address, negative]
+-- intelel = Const . LInt <$> integer
+

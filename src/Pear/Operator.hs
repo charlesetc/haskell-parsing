@@ -6,40 +6,40 @@ import Text.Parsec.Prim
 import Text.ParserCombinators.Parsec.Combinator
 import Control.Monad.Reader
 
-type LParser a b = ParsecT 
-  String 
-  (Maybe (Binary a)) 
-  (Reader (Algebra a)) 
-  b
+type LUserParser a b = Parsec 
+  String
+  (Algebra a)
+  b 
 
 data Associativity = L | R 
 
-data Binary a = Binary { operators :: LParser a (a -> a -> a)
+data Binary a = Binary { operator :: LUserParser a (a -> a -> a)
                        , associativity :: Associativity
                        }
 
-type Unary a = LParser a (a -> a)
+type Unary a = LUserParser a (a -> a)
 
-type Symbol a = LParser a a
+type Symbol a = LUserParser a a
 
-data Algebra a = Algebra -- precdence is based off the order of the list.
-                         { binary :: [Binary a] 
+data Algebra a = Algebra -- precedence is based off the order of the list.
+                         { current :: Int
+                         , binary :: [Binary a]
                          , unary :: [Unary a]
                          , symbols :: [Symbol a]
                          }
 
-expression :: LParser a a
+expression :: LUserParser a a
 expression = try unary_expression
           <|> atom
 
-atom :: LParser a a
+atom :: LUserParser a a
 atom = do
-  algebra <- ask
+  algebra <- getState
   try (choice (symbols algebra)) -- <|> (parens (expression))
 
-unary_expression :: LParser a a
+unary_expression :: LUserParser a a
 unary_expression = do 
-  algebra <- ask
+  algebra <- getState
   op <- choice (unary algebra)
   arg <- expression
   return $ op arg
