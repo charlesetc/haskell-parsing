@@ -1,14 +1,12 @@
-{-# LANGUAGE RankNTypes #-}
-
 -- Integer.hs
-
 
 module Pear.Integer where
 
 import Pear.Operator
 import Text.Parsec
--- import Text.Parsec.String (Parser)
+import Text.Parsec.String (Parser)
 import Control.Monad.Reader
+import Control.Monad.State.Lazy
 import Data.Char (isDigit)
 import Data.List (groupBy)
 
@@ -33,50 +31,32 @@ data LExp
   | Const LInt
   deriving (Show)
 
-type LParser a = forall u. Parsec String u a
-
-lexeme :: LParser a -> LParser a
+lexeme :: Parser a -> Parser a
 lexeme a = spaces *> a <* spaces
 
-tokn :: String -> b -> LParser b
+tokn :: String -> a -> Parser a
 tokn a b = (lexeme . string $ a) >> return b
 
-integer :: LParser a
+integer :: Read a => Parser a
 integer = lexeme (read <$> many1 (satisfy (isDigit)))
 
--- algebra :: Algebra Int
--- algebra = a where
---   a = Algebra 0 [b] [] [integer] 
---   b = Binary op L
---   op = putState a >> tokn "+" (BinaryExp Plus)
-  
+plus :: Parser LExp
+plus = Parser (tokn "+" (BinaryExp Plus)) L
 
--- plus :: Binary LExp
--- plus = Binary (tokn "+" (BinaryExp Plus)) L
+newAlgebra :: Algebra LExp
+newAlgebra bs us ss = Algebra 
+  (lift $ lift $ bs)
+  (lift $ lift $ us)
+  (lift $ lift $ ss)
+
+algebra = newAlgebra [plus] [] [integer]
+
+aparse = parse (runStateT (runReaderT expression algebra) 0) ""
+
+
 
 -- lparse :: String -> Either ParseError LExp
 -- lparse = parse (expression algebra algebra) ""
-
---algebra = Algebra binary_lists unary_lists [intelel]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
