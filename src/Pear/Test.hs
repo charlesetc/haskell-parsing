@@ -35,5 +35,9 @@ evaled :: Either ParseError (AST LExp (AToken LExp)) -> Either ParseError LExp
 evaled (Left a) = Left a
 evaled (Right b) = Right  (eval b)
 
+-- use run everthing to parse and evaluate any expression
+-- as an LExpression
+
+--runEverything :: String -> Either ParseError LExp
 runEverything = evaled . toTree . toTokens
 
