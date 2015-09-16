@@ -1,6 +1,5 @@
 module Main where
 
-import Pear.Integer
+import System.IO
 
-main :: IO ()
-main = putStrLn "Hi there"
+main = putStrLn "hi""

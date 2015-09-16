@@ -2,116 +2,58 @@
 
 module Pear.Integer where
 
-import Pear.Operator
-import Text.Parsec
+
+import Pear.Algebra
+import Pear.Lexer(reservedOp, integer)
+
 import Text.Parsec.String (Parser)
-import Control.Monad.Reader
-import Control.Monad.State.Lazy
-import Data.Char (isDigit)
-import Data.List (groupBy)
+import Text.Parsec (many, oneOf, string, many1, parse, ParseError)
+import Text.ParserCombinators.Parsec.Char (digit, spaces)
 
-newtype LInt = LInt Int deriving (Show)
 
-data LBinary 
-  = Plus 
+
+newtype LInt = LInt Integer deriving (Show)
+
+data LBinary
+  = Plus
   | Minus
   | Times
   | Divide
   | Exponent
   deriving (Show)
 
-data LUnary 
+data LUnary
   = Address
   | Negative
   deriving (Show)
 
-data LExp 
+data LExp
   = BinaryExp LBinary LExp LExp
-  | UnaryExp LUnary LExp 
+  | UnaryExp LUnary LExp
   | Const LInt
   deriving (Show)
 
+--integer :: Parser Int
+--integer = lexeme (read <$> many1 (digit))
+
+whitespace = many $ oneOf " \n\r\t"
+
 lexeme :: Parser a -> Parser a
-lexeme a = spaces *> a <* spaces
+lexeme p = whitespace *> p <* whitespace
 
-tokn :: String -> a -> Parser a
-tokn a b = (lexeme . string $ a) >> return b
+plus, minus, times, divide, exponnt :: Parser (Binary LExp)
+plus = (reservedOp "+") >> (return $ Binary (BinaryExp Plus) 0 L)
+minus = (reservedOp "-") >> (return $ Binary (BinaryExp Minus) 0 L)
+times = (reservedOp "*") >> (return $ Binary (BinaryExp Times) 1 L)
+divide = (reservedOp "/") >> (return $ Binary (BinaryExp Divide) 1 L)
+exponnt = (reservedOp "^") >> (return $ Binary (BinaryExp Exponent) 2 R)
 
-integer :: Read a => Parser a
-integer = lexeme (read <$> many1 (satisfy (isDigit)))
+address, negative :: Parser (Unary LExp)
+address = (reservedOp "&") >> (return $ Unary (UnaryExp Address))
+negative = (reservedOp "-") >> (return $ Unary (UnaryExp Negative))
 
-plus :: Parser LExp
-plus = Parser (tokn "+" (BinaryExp Plus)) L
-
-newAlgebra :: Algebra LExp
-newAlgebra bs us ss = Algebra 
-  (lift $ lift $ bs)
-  (lift $ lift $ us)
-  (lift $ lift $ ss)
-
-algebra = newAlgebra [plus] [] [integer]
-
-aparse = parse (runStateT (runReaderT expression algebra) 0) ""
+binary_lists = [plus, minus, times, divide, exponnt]
+unary_lists = [address, negative]
 
 
-
--- lparse :: String -> Either ParseError LExp
--- lparse = parse (expression algebra algebra) ""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- plus, minus, times, divide, exponnt :: Binary LExp
--- minus = Binary (tokn "-" (BinaryExp Minus)) 1 L
--- times = Binary (tokn "*" (BinaryExp Times)) 2 L
--- divide = Binary (tokn "/" (BinaryExp Divide)) 2 L
--- exponnt = Binary (tokn "^" (BinaryExp Exponent)) 3 L
-
--- address, negative :: Unary LExp
--- address = tokn "&" (UnaryExp Address)
--- negative =tokn "-" (UnaryExp Negative)
-
--- binary_lists = groupBy f [plus, minus, times, divide, exponnt] where
---   f a b = precedence a == precedence b
--- unary_lists = [address, negative]
--- intelel = Const . LInt <$> integer
-
+intelel = Const . LInt <$> integer

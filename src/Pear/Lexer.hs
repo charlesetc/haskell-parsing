@@ -17,15 +17,15 @@ pearStyle =
            , Tok.opLetter = operation
            , Tok.reservedNames =   [ "if"
                                    , "class", "nil", "true", "false"
-                                   , "and", "or" 
+                                   , "and", "or"
                                    ]
            , Tok.reservedOpNames = []
            , Tok.caseSensitive = True
-           } 
+           }
            where operation = oneOf ":?!$%*+.<=>@\\/^|-~"
 
 
-lexer = Tok.makeTokenParser pearStyle 
+lexer = Tok.makeTokenParser pearStyle
 
 --identifiers
 identifier = Tok.identifier lexer
