@@ -33,7 +33,7 @@ buildTree :: PearTree a (AST a (AToken a))
 buildTree = do
   toks <- fst <$> get
   case toks of
-    [] -> get >>= return . head . snd
+    [] -> error "unbalanced expression"
     _ -> case (head toks) of
       (Sym _) -> buildLeaf
       (Bin _) -> buildBNode
