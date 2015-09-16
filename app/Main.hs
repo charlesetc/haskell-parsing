@@ -2,4 +2,5 @@ module Main where
 
 import System.IO
 
-main = putStrLn "hi""
+main :: IO ()
+main = putStrLn "hi"

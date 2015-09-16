@@ -50,12 +50,15 @@ parenLexer = (try open) <|> (try close)
 
 
 -- these are the alexers, they yield algerbaic tokens
-
+-- lexes symbols
 symLexer :: ALexer a (AToken a)
 symLexer = ask >>= lift . P.choice . getSymbols >>= return . Sym
 
+--lexes binary ops
 binLexer :: ALexer a (AToken a)
 binLexer = ask >>= lift . P.choice . getBOps >>= return . Bin
+
+-- lexes unary ops
 
 unLexer :: ALexer a (AToken a)
 unLexer = ask >>= lift . P.choice . getUOps >>= return . Un
@@ -66,6 +69,7 @@ end = do
 
 aLexer :: ALexer a (AToken a)
 aLexer = try binLexer
+      <|> try unLexer
       <|> try symLexer
       <|> try unLexer
       <|> try parenLexer

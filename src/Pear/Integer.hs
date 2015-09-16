@@ -50,7 +50,7 @@ exponnt = (reservedOp "^") >> (return $ Binary (BinaryExp Exponent) 2 R)
 
 address, negative :: Parser (Unary LExp)
 address = (reservedOp "&") >> (return $ Unary (UnaryExp Address))
-negative = (reservedOp "-") >> (return $ Unary (UnaryExp Negative))
+negative = (reservedOp "~") >> (return $ Unary (UnaryExp Negative))
 
 binary_lists = [plus, minus, times, divide, exponnt]
 unary_lists = [address, negative]

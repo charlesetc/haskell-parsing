@@ -30,15 +30,19 @@ pushToken a =
   case a of
     Par Close -> flush
     Par Open -> pushOpen
-    Bin _ -> pushOp a
+    Bin _ -> pushBOp a
+    Un _ -> pushUOp a
     _ -> modify (simpleOutPush a)
   where
     simpleOutPush a s = s { outStack = a:(outStack s) }
 
 -- need this rather than assigning parens a default precedence order
 pushOpen :: (Monad m) => AComp a m ()
-pushOpen = do
-  modify (\s -> s { opStack = (Par Open):(opStack s)} )
+pushOpen = modify (\s -> s { opStack = (Par Open):(opStack s)} )
+
+-- pushes a unary op to stack
+pushUOp :: (Monad m) => (AToken a) -> AComp a m ()
+pushUOp uop = modify (\s -> s { opStack = uop:(opStack s)} )
 
 --pops the top of the opStack
 popOp :: (Monad m) => AComp a m (AToken a)
@@ -56,13 +60,14 @@ getLevel = do
   ops <- opStack <$> get
   case (head ops) of
     (Par Open) -> return (-1)
+    (Un _) -> return (-1)
     (Bin b) -> return $ preced b
 
 -- push the incoming op. if it has "appropriately high precedence",
 -- which is associativity-dependent, we will need to pop off the
 -- op stack some before pushing, otherwise just push it.
-pushOp :: (Monad m) => (AToken a) -> AComp a m ()
-pushOp b@(Bin bop) = do
+pushBOp :: (Monad m) => (AToken a) -> AComp a m ()
+pushBOp b@(Bin bop) = do
   currentOpLevel <- getLevel
   let as = assoc bop
   case as of
@@ -73,7 +78,7 @@ pushOp b@(Bin bop) = do
          then reducePush b
          else modify (simplePush b)
   where
-    reducePush b = reduce >> (pushOp b)
+    reducePush b = reduce >> (pushBOp b)
     simplePush b s = s { opStack = b:(opStack s) }
 
 -- called to move an operator from the opStack to the outStack
