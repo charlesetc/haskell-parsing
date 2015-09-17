@@ -22,7 +22,8 @@ data Algebra a = Algebra { binaries :: [Binary a]
                          }
 
 expression :: Algebra a -> Algebra a -> Parser a
-expression curr orig = try (unExpression curr orig)
+expression curr orig =  try (parens $ expression orig orig)
+                     <|> try (unExpression curr orig)
                      <|> try (binExpression curr orig)
                      <|> atom curr orig
 
@@ -60,7 +61,7 @@ rightBinary curr orig = (try ((expression nextAlg orig) >>= (doA curr orig)))
       arg2 <- try ((expression nextAlg orig) >>= (doA curr orig)) <|> (expression nextAlg orig)
       return $ op arg1 arg2
 
-atom curr orig = ((choice . symbols) orig) <|> (parens $ expression orig orig)
+atom curr orig = ((choice . symbols) orig)
 
 
 newtype LInt = LInt Integer deriving (Show)
@@ -97,10 +98,22 @@ addr = (reservedOp "&") >> (return $ UnaryExp Address)
 
 intelel = integer >>= return . Const . LInt
 
-bs = [Binary plus L, Binary minus L, Binary times L, Binary divide L, Binary exponnt R]
+bs = [Binary (try plus <|> minus) L, Binary (try times <|> divide) L, Binary exponnt R]
 us = [neg, addr]
 sys = [intelel]
 
 algebra = Algebra bs us sys
 
 lparse = parse (expression algebra algebra) ""
+
+
+data AST a = BinNode { bOp :: (a -> a -> a), lchild :: (AST a), rchild :: (AST a) }
+           | UnNode { uop :: (a -> a), child :: (AST a) }
+           | Leaf a
+
+
+eval :: AST a -> a
+eval tree = case tree of
+  UnNode uop c -> uop (eval c)
+  BinNode op c1 c2 -> op (eval c1) (eval c2)
+  (Leaf a) -> a
