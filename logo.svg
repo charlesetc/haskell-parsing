@@ -1,7 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- logo.svg -->
-<svg width='100' height='140'>
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="140"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/charles/Desktop/pear/logo.png"
+   inkscape:export-xdpi="22.531414"
+   inkscape:export-ydpi="22.531414">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1523"
+     inkscape:window-height="1008"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="1.6857143"
+     inkscape:cx="51.186441"
+     inkscape:cy="70"
+     inkscape:window-x="266"
+     inkscape:window-y="128"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
   <!-- Pear -->
-  <path  fill="#070706" mask='url(#mask)' d=" M 24.80 17.82 C 27.31 19.82 25.95 23.57 26.45 26.39 C 30.79 27.27 34.81 30.36 35.64 34.88 C 36.47 39.90 37.91 44.77 39.34 49.63 C 38.35 54.83 35.74 60.36 30.52 62.44 C 22.76 67.02 12.03 61.25 10.31 52.71 C 8.52 47.31 11.67 41.96 15.12 38.01 C 18.35 34.43 19.77 28.90 24.73 27.24 C 24.70 24.10 24.41 20.95 24.80 17.82 Z"
-  transform='scale(2.2), translate(0, -10)' />
-</svg> 
+  <path
+     mask="url(#mask)"
+     d="m 50.911763,1.8030508 c 7.372999,5.8748994 3.378067,16.8903362 4.846792,25.1739442 12.748532,2.584956 24.55708,11.661676 26.995163,24.938949 2.438083,14.745997 6.668011,29.051377 10.868564,43.327383 C 90.714207,110.51807 83.047463,126.76216 67.713975,132.87206 44.919365,146.32558 13.400531,129.37649 8.3481174,104.29067 3.0900823,88.428444 12.343049,72.713088 22.47725,61.110161 31.965212,50.594091 36.136391,34.349994 50.706141,29.473828 50.618018,20.250235 49.766157,10.997268 50.911763,1.8030508 Z"
+     id="path4"
+     inkscape:connector-curvature="0"
+     style="fill:#070706" />
+</svg>
