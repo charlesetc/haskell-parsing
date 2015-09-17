@@ -1,8 +1,9 @@
 # Pear
 
+![pear](logo.svg)
+
 Pear language. Currently just parsing the opearators.
 
-To test the operators:
-```haskell 
-lparse "1 + 2 * (3 - -1)"
-```
+
+![abstract pear tree](tree_logo.svg)
+
