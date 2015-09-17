@@ -12,16 +12,29 @@ data Binary a = Binary { op :: Parser (a -> a-> a)
 
 data Associativity = L | R deriving (Show, Eq)
 
+type Unary a = Parser (a -> a)
+
 type Symbol a = Parser a
 
 data Algebra a = Algebra { binaries :: [Binary a]
+                         , unaries :: [Unary a]
                          , symbols :: [Symbol a]
                          }
 
-
 expression :: Algebra a -> Algebra a -> Parser a
-expression curr orig = case (binaries curr) of
-  [] -> try ((choice . symbols) orig) <|> (parens $ expression orig orig)
+expression curr orig = try (unExpression curr orig)
+                     <|> try (binExpression curr orig)
+                     <|> atom curr orig
+
+unExpression :: Algebra a -> Algebra a -> Parser a
+unExpression curr orig = do
+  op <- (choice . unaries) orig
+  arg <- expression orig orig
+  return $ op arg
+
+binExpression :: Algebra a -> Algebra a -> Parser a
+binExpression curr orig = case (binaries curr) of
+  [] -> parserZero
   otherwise -> case (assoc . head . binaries) curr of
     L -> leftBinary curr orig
     R -> rightBinary curr orig
@@ -47,7 +60,7 @@ rightBinary curr orig = (try ((expression nextAlg orig) >>= (doA curr orig)))
       arg2 <- try ((expression nextAlg orig) >>= (doA curr orig)) <|> (expression nextAlg orig)
       return $ op arg1 arg2
 
-
+atom curr orig = ((choice . symbols) orig) <|> (parens $ expression orig orig)
 
 
 newtype LInt = LInt Integer deriving (Show)
@@ -79,11 +92,15 @@ times = (reservedOp "*") >> (return $ BinaryExp Times)
 divide = (reservedOp "/") >> (return $ BinaryExp Divide)
 exponnt = (reservedOp "^") >> (return $ BinaryExp Exponent)
 
+neg = (reservedOp "-") >> (return $ UnaryExp Negative)
+addr = (reservedOp "&") >> (return $ UnaryExp Address)
+
 intelel = integer >>= return . Const . LInt
 
 bs = [Binary plus L, Binary minus L, Binary times L, Binary divide L, Binary exponnt R]
+us = [neg, addr]
 sys = [intelel]
 
-algebra = Algebra bs sys
+algebra = Algebra bs us sys
 
 lparse = parse (expression algebra algebra) ""
