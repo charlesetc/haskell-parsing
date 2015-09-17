@@ -1,6 +1,5 @@
-# Pear
+# Pear ![pear](logo.png)
 
-![pear](logo.png)
 
 Pear language. Currently just parsing the opearators.
 
