@@ -1,10 +1,10 @@
-module Pear.AStack where
+module Pear.Operator.AStack where
 
 import Data.Functor
 import Control.Monad.Identity
 import Control.Monad.State.Lazy
 import Control.Applicative
-import Pear.Algebra
+import Pear.Operator.Algebra
 
 
 -- this is an implementation of the "shunting yard algorithm" for parsing

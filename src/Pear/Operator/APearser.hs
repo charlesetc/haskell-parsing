@@ -1,9 +1,9 @@
-module Pear.APearser where
+module Pear.Operator.APearser where
 
 
-import Pear.Algebra
-import Pear.AStack
-import qualified Pear.ALexer as L
+import Pear.Operator.Algebra
+import Pear.Operator.AStack
+import qualified Pear.Operator.ALexer as L
 
 import Control.Monad.Morph
 import Control.Monad.State.Lazy

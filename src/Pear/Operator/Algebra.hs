@@ -1,4 +1,4 @@
-module Pear.Algebra where
+module Pear.Operator.Algebra where
 
 data Associativity = L | R deriving (Show, Eq)
 

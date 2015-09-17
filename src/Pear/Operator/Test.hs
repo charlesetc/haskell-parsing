@@ -1,12 +1,12 @@
-module Main where
+module Pear.Operator.Test where
 
-import Pear.Algebra
-import Pear.AStack
-import Pear.ALexer
-import Pear.APearser
-import Pear.ASPearT
+import Pear.Operator.Algebra
+import Pear.Operator.AStack
+import Pear.Operator.ALexer
+import Pear.Operator.APearser
+import Pear.Operator.ASPearT
 
-import Pear.Integer
+import Pear.Operator.Integer
 
 import System.IO
 import Control.Monad.Reader
@@ -38,6 +38,6 @@ evaled (Right b) = Right  (eval b)
 -- use run everthing to parse and evaluate any expression
 -- as an LExpression
 
---runEverything :: String -> Either ParseError LExp
+runEverything :: String -> Either ParseError LExp
 runEverything = evaled . toTree . toTokens
 

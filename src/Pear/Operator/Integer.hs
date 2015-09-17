@@ -1,10 +1,10 @@
 -- Integer.hs
 
-module Pear.Integer where
+module Pear.Operator.Integer where
 
 
-import Pear.Algebra
-import Pear.Lexer(reservedOp, integer)
+import Pear.Operator.Algebra
+import Pear.Lexer(reservedOp)
 
 import Text.Parsec.String (Parser)
 import Text.Parsec (many, oneOf, string, many1, parse, ParseError)
@@ -12,7 +12,7 @@ import Text.ParserCombinators.Parsec.Char (digit, spaces)
 
 
 
-newtype LInt = LInt Integer deriving (Show)
+newtype LInt = LInt Int deriving (Show)
 
 data LBinary
   = Plus
@@ -33,8 +33,8 @@ data LExp
   | Const LInt
   deriving (Show)
 
---integer :: Parser Int
---integer = lexeme (read <$> many1 (digit))
+integer :: Parser Int
+integer = lexeme (read <$> many1 (digit))
 
 whitespace = many $ oneOf " \n\r\t"
 

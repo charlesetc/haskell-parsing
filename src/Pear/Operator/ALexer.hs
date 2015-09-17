@@ -1,8 +1,8 @@
-module Pear.ALexer  where
+module Pear.Operator.ALexer  where
 
 import Control.Monad.Reader
-import Pear.AStack
-import Pear.Algebra
+import Pear.Operator.AStack
+import Pear.Operator.Algebra
 import Text.Parsec.Char
 import Control.Monad.Morph
 import qualified Text.Parsec as P

@@ -1,6 +1,6 @@
-module Pear.ASPearT where
+module Pear.Operator.ASPearT where
 
-import Pear.Algebra
+import Pear.Operator.Algebra
 
 import Control.Monad.State.Lazy
 import Data.Functor

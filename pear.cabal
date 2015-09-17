@@ -16,12 +16,14 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Pear.Lexer
-                     , Pear.Integer
-                     , Pear.AStack
-                     , Pear.Algebra
-                     , Pear.ASPearT
-                     , Pear.ALexer
-                     , Pear.APearser
+                     , Pear.Operator.Integer
+                     , Pear.Operator.AStack
+                     , Pear.Operator.Algebra
+                     , Pear.Operator.ASPearT
+                     , Pear.Operator.ALexer
+                     , Pear.Operator.Test 
+                     , Pear.Operator.APearser
+                     , Pear.Operator.Bad
   build-depends:       base >= 4.7 && < 5
                      , mtl >= 2.2.1
                      , parsec
