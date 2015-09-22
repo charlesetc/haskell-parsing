@@ -4,63 +4,50 @@ module Pear.Operator.Integer where
 
 
 import Pear.Operator.Algebra
-import Pear.Lexer(reservedOp, identifier)
+import Pear.Lexer(reservedOp, identifier, whiteSpace)
 
 import Text.Parsec.String (Parser)
-import Text.Parsec (many, oneOf, string, many1, parse, ParseError)
+import Text.Parsec (many, oneOf, string, many1, parse, ParseError
 import Text.ParserCombinators.Parsec.Char (digit, spaces)
 
+type Name = String
 
+data Value = VInt Int 
+       | VString String deriving (Show)
 
-newtype LInt = LInt Int deriving (Show)
-
-data LBinary
-  = Plus
-  | Minus
-  | Times
-  | Divide
-  | Exponent
+data Ast
+  = Const Value
+  | Function Name [Ast]
   deriving (Show)
-
-data LUnary
-  = Address
-  | Negative
-  deriving (Show)
-
-data LExp
-  = BinaryExp LBinary LExp LExp
-  | UnaryExp LUnary LExp
-  | Const LConst
-  deriving (Show)
-
-data LConst = IntLit LInt | Fun B deriving Show
-
-newtype B = B [String] deriving Show
-
-elbl :: Parser B
-elbl = B <$> many1 identifier
 
 integer :: Parser Int
 integer = lexeme (read <$> many1 (digit))
 
-whitespace = many $ oneOf " \n\r\t"
+-- This is not working how I want it to
+-- whitespace = many . choice $ [string " ", string "\t", string "\\\n"]
 
 lexeme :: Parser a -> Parser a
-lexeme p = whitespace *> p <* whitespace
+lexeme p = whiteSpace *> p <* whiteSpace
 
-plus, minus, times, divide, exponnt :: Parser (Binary LExp)
-plus = (reservedOp "+") >> (return $ Binary (BinaryExp Plus) 0 L)
-minus = (reservedOp "-") >> (return $ Binary (BinaryExp Minus) 0 L)
-times = (reservedOp "*") >> (return $ Binary (BinaryExp Times) 1 L)
-divide =  (reservedOp "/") >> (return $ Binary (BinaryExp Divide) 1 L)
-exponnt = (reservedOp "^") >> (return $ Binary (BinaryExp Exponent) 2 R)
+binary_function :: String -> Ast -> Ast -> Ast
+binary_function name a b = Function name [a, b]
+unary_function :: String -> Ast -> Ast
+unary_function name a = Function name [a]
 
-address, negative :: Parser (Unary LExp)
-address = (reservedOp "&") >> (return $ Unary (UnaryExp Address))
-negative = (reservedOp "~") >> (return $ Unary (UnaryExp Negative))
+plus, minus, times, divide, exponnt :: Parser (Binary Ast)
+plus = (reservedOp "+") >> (return $ Binary (binary_function "+") 0 L)
+minus = (reservedOp "-") >> (return $ Binary (binary_function "-") 0 L)
+times = (reservedOp "*") >> (return $ Binary (binary_function "*") 1 L)
+divide = (reservedOp "/") >> (return $ Binary (binary_function "/") 1 L)
+exponnt = (reservedOp "^") >> (return $ Binary (binary_function "^") 2 R)
 
-binary_lists = [plus, minus, times, divide, exponnt]
+address, negative :: Parser (Unary Ast)
+address = (reservedOp "&") >> (return $ Unary (unary_function "&"))
+negative = (reservedOp "~") >> (return $ Unary (unary_function "~"))
+
+binary_lists = [exponnt, times, divide, plus, minus]
 unary_lists = [address, negative]
 
-elalal = elbl >>= (return . Const . Fun)
-intelel = integer >>= (return . Const . IntLit . LInt)
+-- elalal = elbl >>= (return . Const . Fun)
+-- intelel = integer >>= (return . Const . IntLit . LInt)
+intelel = Const . VInt <$> integer

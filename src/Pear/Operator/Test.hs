@@ -15,7 +15,7 @@ import Control.Monad.State.Lazy
 
 import Text.Parsec (parse, ParseError)
 
-algebra = PAlgebra binary_lists unary_lists [intelel, elalal]
+algebra = PAlgebra binary_lists unary_lists [intelel] -- , elalal
 
 parseAlgebra :: PAlgebra a -> Parser (AST a (AToken a))
 parseAlgebra alg = buildTree <$> (shYardOutput alg)
@@ -28,5 +28,3 @@ parseToExpression :: (PAlgebra a) -> Parser a
 parseToExpression alg = evalTree <$> (parseAlgebra alg)
 
 lparse = parse (parseToExpression algebra) ""
-
-
