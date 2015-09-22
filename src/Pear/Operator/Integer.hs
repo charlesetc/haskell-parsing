@@ -49,7 +49,7 @@ lexeme :: Parser a -> Parser a
 lexeme p = whitespace *> p <* whitespace
 
 plus, minus, times, divide, exponnt :: Parser (Binary LExp)
-plus = (reservedOp "+") >> (return $ Binary (BinaryExp Plus) 2 L)
+plus = (reservedOp "+") >> (return $ Binary (BinaryExp Plus) 0 L)
 minus = (reservedOp "-") >> (return $ Binary (BinaryExp Minus) 0 L)
 times = (reservedOp "*") >> (return $ Binary (BinaryExp Times) 1 L)
 divide =  (reservedOp "/") >> (return $ Binary (BinaryExp Divide) 1 L)
