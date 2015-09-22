@@ -7,7 +7,7 @@ import Pear.Operator.Algebra
 import Pear.Lexer(reservedOp, identifier, whiteSpace)
 
 import Text.Parsec.String (Parser)
-import Text.Parsec (many, oneOf, string, many1, parse, ParseError
+import Text.Parsec (many, oneOf, string, many1, parse, ParseError)
 import Text.ParserCombinators.Parsec.Char (digit, spaces)
 
 type Name = String
