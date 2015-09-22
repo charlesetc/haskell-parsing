@@ -1,5 +1,6 @@
 module Pear.Operator.Test where
 
+import Text.Parsec.String
 import Pear.Operator.Algebra
 import Pear.Operator.AStack
 import Pear.Operator.ALexer
@@ -14,30 +15,18 @@ import Control.Monad.State.Lazy
 
 import Text.Parsec (parse, ParseError)
 
-algebra = PAlgebra binary_lists unary_lists [intelel]
+algebra = PAlgebra binary_lists unary_lists [intelel, elalal]
 
-emptyStack = AStack [(Par Open)] []
-
-lparse = parse (runReaderT (execStateT (parseAll) emptyStack)  algebra) ""
-
-toTokens :: String -> Either ParseError [AToken LExp]
-toTokens s = let foo = lparse s
-             in case foo of
-               Left a -> Left a
-               Right b -> Right $ outStack b
-
-
-toTree :: Either ParseError [AToken LExp] -> Either ParseError (AST LExp (AToken LExp))
-toTree (Left a) = Left a
-toTree (Right tokens) = Right ((head . snd) $ execState (buildTree) (tokens, []))
-
-evaled :: Either ParseError (AST LExp (AToken LExp)) -> Either ParseError LExp
-evaled (Left a) = Left a
-evaled (Right b) = Right  (eval b)
+parseAlgebra :: PAlgebra a -> Parser (AST a (AToken a))
+parseAlgebra alg = buildTree <$> (shYardOutput alg)
 
 -- use run everthing to parse and evaluate any expression
 -- as an LExpression
 
-runEverything :: String -> Either ParseError LExp
-runEverything = evaled . toTree . toTokens
+
+parseToExpression :: (PAlgebra a) -> Parser a
+parseToExpression alg = evalTree <$> (parseAlgebra alg)
+
+lparse = parse (parseToExpression algebra) ""
+
 

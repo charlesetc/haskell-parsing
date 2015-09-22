@@ -24,11 +24,14 @@ data Algebra a = Algebra { binaries :: [Binary a]
                          , symbols :: [Symbol a]
                          }
 
-expression :: Algebra a -> Algebra a -> Parser (AST a)
-expression curr orig =  try (parens $ expression orig orig)
+expression' :: Algebra a -> Algebra a -> Parser (AST a)
+expression' curr orig =  try (parens $ expression orig orig)
                      <|> try (unExpression curr orig)
                      <|> try (binExpression curr orig)
                      <|> atom curr orig
+
+expression :: Algebra a -> Algebra a -> Parser (AST a)
+expression a1 a2 =  (expression' a1 a2)>>= (\a -> eof >> return a)
 
 unExpression :: Algebra a -> Algebra a -> Parser (AST a)
 unExpression curr orig = do

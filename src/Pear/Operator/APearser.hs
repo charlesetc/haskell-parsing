@@ -7,6 +7,7 @@ import qualified Pear.Operator.ALexer as L
 
 import Control.Monad.Morph
 import Control.Monad.State.Lazy
+import Control.Monad.Reader
 
 import Text.Parsec.String as P
 
@@ -48,3 +49,6 @@ parseOne = (lift L.aLexer) >>= pushToken
 
 parseAll :: APearser a ()
 parseAll = (try end) <|> (parseOne >> parseAll)
+
+shYardOutput :: L.PAlgebra a -> Parser [AToken a]
+shYardOutput alg = outStack <$> (runReaderT (execStateT (parseAll) emptyStack) alg)

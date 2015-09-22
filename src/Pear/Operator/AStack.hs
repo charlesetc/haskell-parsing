@@ -5,7 +5,8 @@ import Control.Monad.Identity
 import Control.Monad.State.Lazy
 import Control.Applicative
 import Pear.Operator.Algebra
-
+import Control.Monad.Reader
+import Control.Monad.State.Lazy
 
 -- this is an implementation of the "shunting yard algorithm" for parsing
 -- binary and unary operators on some set of  symbols
@@ -93,4 +94,4 @@ flush = do
     (Par Open) -> modify ( \s -> s { opStack = tail ops } )
     _ -> reduce >> flush
 
-
+emptyStack = AStack [(Par Open)] []
