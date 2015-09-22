@@ -1,4 +1,4 @@
-module Pear.Operator.ASPearT where
+module Pear.Operator.Tree where
 
 import Pear.Operator.Algebra
 

@@ -1,4 +1,4 @@
-module Pear.Operator.AStack where
+module Pear.Operator.Stack where
 
 import Data.Functor
 import Control.Monad.Identity

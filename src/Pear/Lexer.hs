@@ -1,49 +1,27 @@
-
 module Pear.Lexer where
 
-import Text.ParserCombinators.Parsec
-import Text.ParserCombinators.Parsec.Expr as Ex
-import Text.ParserCombinators.Parsec.Language
-import qualified Text.ParserCombinators.Parsec.Token as Tok
+import Prelude hiding (lex)
+import Text.Parsec.String
+import Pear.Operator.Algebra
+import Pear.Operator.Stack
+import Pear.Operator.Lexer
+import Pear.Operator.Tree
 
-pearStyle = 
-  emptyDef { Tok.commentStart = "#--"
-           , Tok.commentEnd = "--#"
-           , Tok.commentLine = "#"
-           , Tok.nestedComments = True
-           , Tok.identStart = letter :: Parser Char
-           , Tok.identLetter = alphaNum <|> oneOf "_'"
-           , Tok.opStart = operation
-           , Tok.opLetter = operation
-           , Tok.reservedNames =   [ "if"
-                                   , "class", "nil", "true", "false"
-                                   , "and", "or"
-                                   ]
-           , Tok.reservedOpNames = []
-           , Tok.caseSensitive = True
-           }
-           where operation = oneOf ":?!$%*+.<=>@\\/^|-~"
+import Pear.Operator.Concrete
+import Pear.Types
 
+import System.IO
+import Control.Monad.Reader
+import Control.Monad.State.Lazy
 
-lexer = Tok.makeTokenParser pearStyle
+import Text.Parsec (parse, ParseError)
 
---identifiers
-identifier = Tok.identifier lexer
-reserved = Tok.reserved lexer
-reservedOp = Tok.reservedOp lexer
+algebra = PAlgebra binaryLists unaryLists [integerConstant]
 
---groupers
-parens = Tok.parens lexer
-braces = Tok.braces lexer
-brackets = Tok.brackets lexer
+parseAlgebra :: PAlgebra a -> Parser (AST a (AToken a))
+parseAlgebra alg = buildTree <$> (shYardOutput alg)
 
--- literals
-integer = Tok.integer lexer
-stringLiteral = Tok.stringLiteral lexer
+parseToExpression :: (PAlgebra a) -> Parser a
+parseToExpression alg = evalTree <$> (parseAlgebra alg)
 
--- seperators
-semi = Tok.semi lexer
-comma = Tok.comma lexer
-commaSep = Tok.commaSep lexer
-whiteSpace = Tok.whiteSpace lexer
-lexeme = Tok.lexeme lexer
+lex = parse (parseToExpression algebra) ""

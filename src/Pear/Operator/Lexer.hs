@@ -1,9 +1,10 @@
-module Pear.Operator.ALexer  where
+module Pear.Operator.Lexer  where
 
 import Control.Monad.Reader
-import Pear.Operator.AStack
+import Pear.Operator.Stack
 import Pear.Operator.Algebra
 import Text.Parsec.Char
+import Control.Monad.State.Lazy
 import Control.Monad.Morph
 import qualified Text.Parsec as P
 import qualified Text.Parsec.String as PS
@@ -73,3 +74,39 @@ aLexer = try binLexer
       <|> try symLexer
       <|> try unLexer
       <|> try parenLexer
+
+---- All from apearser:
+
+type APearser a = (AComp a) (ALexer a)
+
+--these are lifted parser combinators
+
+-- the type checker didn't like the type I gave it,
+-- probably because the function is much more generic.
+--hoist2ARS :: (L.ALexer a b -> L.ALexer a b) ->
+--             (APearser a b -> APearser a b)
+hoist2ARS f = \p q -> (
+  StateT $ \s -> ((runStateT p s) `f` (runStateT q s)))
+
+hoisted_try :: APearser a b -> APearser a b
+hoisted_try = hoist try -- maybe (try)
+
+(^-^) = hoist2ARS (<|>)
+
+-- these parse strings into tokens then throw them into
+-- the outer state for processesing. Note that the end
+-- is the way it is becaue the implementation of the parser
+-- requires the last input to be a close parens.
+
+hoisted_end :: APearser a ()
+hoisted_end = do
+  (lift end) >> pushToken (Par Close)
+
+parseOne :: APearser a ()
+parseOne = (lift aLexer) >>= pushToken
+
+parseAll :: APearser a ()
+parseAll = (hoisted_try hoisted_end) ^-^ (parseOne >> parseAll)
+
+shYardOutput :: PAlgebra a -> PS.Parser [AToken a]
+shYardOutput alg = outStack <$> (runReaderT (execStateT (parseAll) emptyStack) alg)
