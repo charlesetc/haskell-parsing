@@ -1,7 +1,9 @@
 module Pear.Lexer where
 
 import Prelude hiding (lex)
-import Text.Parsec.String
+import Text.Parsec.String (Parser)
+
+import Pear.Operator
 import Pear.Operator.Algebra
 import Pear.Operator.Stack
 import Pear.Operator.Lexer
@@ -18,10 +20,4 @@ import Text.Parsec (parse, ParseError)
 
 algebra = PAlgebra binaryLists unaryLists [integerConstant]
 
-parseAlgebra :: PAlgebra a -> Parser (AST a (AToken a))
-parseAlgebra alg = buildTree <$> (shYardOutput alg)
-
-parseToExpression :: (PAlgebra a) -> Parser a
-parseToExpression alg = evalTree <$> (parseAlgebra alg)
-
-lex = parse (parseToExpression algebra) ""
+lex = parse (parseAlgebra algebra) ""

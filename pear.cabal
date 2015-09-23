@@ -16,7 +16,8 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Pear.Lexer
-                     , Pear.Types
+                     , Pear.Types 
+                     , Pear.Operator
                      , Pear.Operator.Concrete
                      , Pear.Operator.Stack
                      , Pear.Operator.Algebra

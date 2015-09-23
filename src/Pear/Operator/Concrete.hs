@@ -4,6 +4,7 @@ module Pear.Operator.Concrete where
 
 import Pear.Types
 import Pear.Operator.Algebra
+import Pear.Operator.Tree
 import Pear.Operator.Helper (reservedOp, identifier, whiteSpace)
 
 import Text.Parsec.String (Parser)
