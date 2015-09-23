@@ -111,8 +111,11 @@ parseMany = htry hend <||> (parseOne >> parseMany)
 parseAll :: APearser a ()
 parseAll = parseOne >> parseMany
 
+parenError :: String
+parenError = "Unbalanced parentheses. Expected '('"
+
 -- move this to stack
 shYardOutput :: PAlgebra a -> PS.Parser [AToken a]
-shYardOutput alg = result >>= (\r -> if null (opStack r) then (return $ outStack r) else error "You fucked up")
+shYardOutput alg = result >>= (\r -> if null (opStack r) then (return $ outStack r) else error parenError)
   where
     result = (runReaderT (execStateT (parseAll) emptyStack) alg)

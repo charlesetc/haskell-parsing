@@ -91,7 +91,7 @@ flush :: (Monad m) => AComp a m ()
 flush = do
   ops <- opStack <$> get
   case ops of 
-    [] -> error "You fucked up"
+    [] -> return () --  error "Unbalenced parentheses. Expected ')'"
     _ -> case (head ops) of
            (Par Open) -> modify ( \s -> s { opStack = tail ops } )
            _ -> reduce >> flush
