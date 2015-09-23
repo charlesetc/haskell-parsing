@@ -91,7 +91,7 @@ hoist2ARS f = \p q -> (
 hoisted_try :: APearser a b -> APearser a b
 hoisted_try = hoist try -- maybe (try)
 
-(^-^) = hoist2ARS (<|>)
+(\/.-.\/) = hoist2ARS (<|>)
 
 -- these parse strings into tokens then throw them into
 -- the outer state for processesing. Note that the end
@@ -106,7 +106,7 @@ parseOne :: APearser a ()
 parseOne = (lift aLexer) >>= pushToken
 
 parseAll :: APearser a ()
-parseAll = (hoisted_try hoisted_end) ^-^ (parseOne >> parseAll)
+parseAll = (hoisted_try hoisted_end) \/.-.\/ (parseOne >> parseAll)
 
 shYardOutput :: PAlgebra a -> PS.Parser [AToken a]
 shYardOutput alg = outStack <$> (runReaderT (execStateT (parseAll) emptyStack) alg)
