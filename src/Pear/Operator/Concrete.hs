@@ -6,7 +6,7 @@ import Pear.Types
 import Pear.Operator.Lexer (PAlgebra(..), shYardOutput)
 import Pear.Operator.Algebra
 import Pear.Operator.Tree
-import Pear.Operator.Helper (reservedOp, identifier, whiteSpace)
+import Pear.Lexer.Helper (reservedOp, identifier, whiteSpace)
 
 import Text.Parsec.String (Parser)
 import Text.Parsec (many, oneOf, string, many1, parse, ParseError)

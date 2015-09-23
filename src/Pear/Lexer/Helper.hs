@@ -1,5 +1,5 @@
 
-module Pear.Operator.Helper where
+module Pear.Lexer.Helper where
 
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Expr as Ex

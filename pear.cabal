@@ -23,7 +23,7 @@ library
                      , Pear.Operator.Algebra
                      , Pear.Operator.Tree
                      , Pear.Operator.Lexer
-                     , Pear.Operator.Helper
+                     , Pear.Lexer.Helper
   build-depends:       base >= 4.7 && < 5
                      , mtl >= 2.2.1
                      , parsec
