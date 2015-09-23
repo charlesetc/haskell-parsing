@@ -90,8 +90,10 @@ reduce = popOp >>= (\op ->  modify (\s -> s { outStack = op:(outStack s) }) )
 flush :: (Monad m) => AComp a m ()
 flush = do
   ops <- opStack <$> get
-  case (head ops) of
-    (Par Open) -> modify ( \s -> s { opStack = tail ops } )
-    _ -> reduce >> flush
+  case ops of 
+    [] -> error "You fucked up"
+    _ -> case (head ops) of
+           (Par Open) -> modify ( \s -> s { opStack = tail ops } )
+           _ -> reduce >> flush
 
 emptyStack = AStack [(Par Open)] []

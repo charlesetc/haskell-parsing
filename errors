@@ -1,9 +1,0 @@
-pear-0.1.0.0: build
-Building pear-0.1.0.0...
-Preprocessing library pear-0.1.0.0...
-[2 of 3] Compiling Pear.Operator    ( src/Pear/Operator.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Pear/Operator.o )
-[3 of 3] Compiling Pear.Integer     ( src/Pear/Integer.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Pear/Integer.o ) [Pear.Operator changed]
-
-src/Pear/Integer.hs:55:11: Not in scope: ‘precedence’
-
-src/Pear/Integer.hs:55:27: Not in scope: ‘precedence’
