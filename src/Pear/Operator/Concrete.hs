@@ -3,6 +3,7 @@
 module Pear.Operator.Concrete where
 
 import Pear.Types
+import Pear.Operator.Lexer (PAlgebra(..), shYardOutput)
 import Pear.Operator.Algebra
 import Pear.Operator.Tree
 import Pear.Operator.Helper (reservedOp, identifier, whiteSpace)
@@ -44,3 +45,9 @@ binaryLists = [exponnt, times, divide, plus, minus]
 unaryLists = [address, negative]
 
 integerConstant = Const . VInt <$> integer
+
+shuntingYard :: PAlgebra a -> Parser (AST a (AToken a))
+shuntingYard alg = buildTree <$> (shYardOutput alg)
+
+parseAlgebra :: (PAlgebra a) -> Parser a
+parseAlgebra alg = evalTree <$> (shuntingYard alg)

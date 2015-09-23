@@ -1,4 +1,4 @@
-module Pear.Operator.Lexer  where
+module Pear.Operator.Lexer where
 
 import Control.Monad.Reader
 import Pear.Operator.Stack

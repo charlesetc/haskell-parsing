@@ -18,6 +18,5 @@ import Control.Monad.State.Lazy
 
 import Text.Parsec (parse, ParseError)
 
-algebra = PAlgebra binaryLists unaryLists [integerConstant]
-
-lex = parse (parseAlgebra algebra) ""
+parseEverything = pearAlgebra
+lex = parse (parseEverything) ""

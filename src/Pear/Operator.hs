@@ -1,14 +1,18 @@
-module Pear.Operator where
+module Pear.Operator (pearAlgebra) where
 
-import Pear.Operator.Algebra
-import Pear.Operator.Stack
-import Pear.Operator.Lexer
-import Pear.Operator.Tree
+import Pear.Types
+
+import Pear.Operator.Lexer (PAlgebra(..))
+import Pear.Operator.Concrete
+-- import Pear.Operator.Algebra
+-- import Pear.Operator.Stack
+-- import Pear.Operator.Lexer
+-- import Pear.Operator.Tree
 
 import Text.Parsec.String (Parser)
 
-shuntingYard :: PAlgebra a -> Parser (AST a (AToken a))
-shuntingYard alg = buildTree <$> (shYardOutput alg)
+algebra :: PAlgebra Ast
+algebra = PAlgebra binaryLists unaryLists [integerConstant]
 
-parseAlgebra :: (PAlgebra a) -> Parser a
-parseAlgebra alg = evalTree <$> (shuntingYard alg)
+pearAlgebra :: Parser Ast
+pearAlgebra = parseAlgebra algebra 
